@@ -1,0 +1,13 @@
+[Unit]
+Description=Run CMS %i
+Requires=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/tmp
+ExecStart=/bin/sh -c "/usr/local/bin/cms%i >> /var/log/cms/%i.log 2>&1"
+Restart=on-failure
+SyslogIdentifier=cms%i
+
+[Install]
+WantedBy=multi-user.target
