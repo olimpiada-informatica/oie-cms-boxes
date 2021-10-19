@@ -92,6 +92,66 @@ requiere acceso por SSH a la máquina en la que está instalado (para ejecutar
 comandos por consola), por lo que es indispensable que los responsables TIC
 den acceso a ella de alguna forma.
 
+### Lanzamiento
+
+En general, la creación de una máquina virtual con Vagrant se hace desde la
+línea de órdenes con `vagrant up`, por ejemplo:
+
+```bash
+# Lanzamos la máquina virtual de TestBox
+$ cd TestBox
+$ cp .env.template .env
+$ emacs .env
+# ... configurar las propiedades ...
+$ vagrant up
+```
+
+La primera vez que se lanza, `Vagrant` configurará la máquina virtual,
+instalando los paquetes necesarios, etc. En la consola se podrá ver el proceso.
+El resultado es una máquina virtual completamente funcional y que se lanzará
+utilizando el sistema de virtualización configurado (típicamente
+VirtualBox). De hecho, si se abre VirtualBox se verá toda la información
+de la máquina virtual. Tras su apagado, se puede incluso coger el fichero
+y llevarla a otro servidor (los ficheros en Linux con Virtual Box
+suelen encontrarse en `~/VirtualBox VMs`).
+
+Una vez creada la máquina, desde el mismo directorio nos podemos
+conectar por SSH a ella con el usuario que `Vagrant` crea por defecto
+(`vagrant`):
+
+```bash
+$ vagrant ssh
+Welcome to Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-156-generic x86_64)
+
+[...]
+
+vagrant@cms-OIE:~$ 
+```
+
+Esa consola nos permite ver la instalación y ajustarla a nuestras necesidades.
+
+Para parar la máquina podemos confiar en la consola de VirtualBox (o el sistema
+de virtualización correspondiente) o utilizar el propio `Vagrant`:
+
+```bash
+# Apagamos la máquina
+$ vagrant halt
+```
+
+Para volver a lanzarla/encenderla, bastará ejecutar de nuevo `vagrant up`. Al
+estar la máquina ya creada y configurada, no se volverá a pasar por el
+proceso de instalación de CMS.
+
+Por último, tras terminar las pruebas podemos eliminar por completo la máquina
+virtual, bien desde VirtualBox bien desde la consola con `Vagrant`:
+
+```bash
+# Destruimos la máquina
+$ vagrant destroy
+    default: Are you sure you want to destroy the 'default' VM? [y/N] y
+```
+
+
 ## Prerequisitos
 
 Como se ha dicho, los scripts hacen uso de [Vagrant](https://es.wikipedia.org/wiki/Vagrant_(software)).
