@@ -92,7 +92,7 @@ requiere acceso por SSH a la máquina en la que está instalado (para ejecutar
 comandos por consola), por lo que es indispensable que los responsables TIC
 den acceso a ella de alguna forma.
 
-### Lanzamiento
+### Ciclo de vida de las máquinas virtuales
 
 En general, la creación de una máquina virtual con Vagrant se hace desde la
 línea de órdenes con `vagrant up`, por ejemplo:
@@ -134,7 +134,8 @@ Para parar la máquina podemos confiar en la consola de VirtualBox (o el sistema
 de virtualización correspondiente) o utilizar el propio `Vagrant`:
 
 ```bash
-# Apagamos la máquina
+# Apagamos la máquina (desde una consola en el host situada
+# en el directorio TestBox)
 $ vagrant halt
 ```
 
@@ -146,11 +147,11 @@ Por último, tras terminar las pruebas podemos eliminar por completo la máquina
 virtual, bien desde VirtualBox bien desde la consola con `Vagrant`:
 
 ```bash
-# Destruimos la máquina
+# Destruimos la máquina (desde una consola en el host situada
+# en el directorio TestBox)
 $ vagrant destroy
     default: Are you sure you want to destroy the 'default' VM? [y/N] y
 ```
-
 
 ## Prerequisitos
 
