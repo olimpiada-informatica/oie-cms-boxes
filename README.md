@@ -25,6 +25,13 @@ de la OIE en las que se ha utilizado CMS. La organización de la OIE intentará
 publicar con cierta antelación las máquinas virtuales aconsejadas para
 la edición correspondiente.
 
+Por ejemplo, para la edición de 2022 de la OIE puedes descargarte el repositorio
+con:
+
+```bash
+$ git clone https://github.com/olimpiada-informatica/oie-cms-boxes --branch oie-2022
+```
+
 Todas las opciones de desplegado hacen uso de una *versión adaptada* de CMS
 para su uso en la OIE que está disponible en
 [este repositorio específico](https://github.com/olimpiada-informatica/cms). Las
