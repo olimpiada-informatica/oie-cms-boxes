@@ -1,0 +1,161 @@
+# Fichero que crea una máquina virtual con un CMS desplegado
+# en varias máquinas/nodos. Requiere un fichero de configuración (.env) con
+# información básica.
+#
+# Olimpiada Informática Española (OIE)
+
+require 'fileutils'
+require 'securerandom'
+require 'ipaddr'
+
+CONFIG_FILE = ".env"
+
+# Imagen base: Ubunutu 18.04. Fijamos una versión concreta probada
+# aunque invalide actualizaciones
+# Puedes probar con una versión más moderna, siempre y cuando
+# mantengas bionic64
+# Historia de versiones: https://app.vagrantup.com/ubuntu/boxes/bionic64
+VM_BASE_IMAGE_NAME = "ubuntu/bionic64"
+VM_BASE_IMAGE_VERSION = "20210916.0.0"
+
+
+# Comprobamos si existe el fichero de configuración. En la práctica
+# solo se necesita en la primera ejecución cuando se monta la MV. Si no existe, se copia desde
+# el template y se indica.
+if !File.exists?(CONFIG_FILE) 
+    FileUtils.cp("#{CONFIG_FILE}.template", CONFIG_FILE)
+    print "** ERROR **: Fichero de configuración del desplegado (#{CONFIG_FILE}) no encontrado.\n"
+    print "Hemos creado uno con el contenido por defecto. Adáptalo y vuelve a ejecutar vagrant up.\n"
+    print "Terminamos.\n"
+    raise "Fichero (#{CONFIG_FILE}) no encontrado."
+end
+
+unless Vagrant.has_plugin?("vagrant-env")
+    print "** ERROR **: Plugin vagrant-env no encontrado. Por favor instálalo con\n\n"
+    print "$ vagrant plugin install vagrant-env\n\n"
+    print "Terminamos.\n"
+    raise 'plugin vagrant-env no instalado'
+end
+
+# Elegimos valores aleatorios para provisioning de contraseña de la BBDD
+# y secret_key de CMS (ambos sobreescribibles en el .env)
+DB_PASS_CANDIDATE=SecureRandom.hex(16)
+SECRET_KEY_CANDIDATE=SecureRandom.hex(16)
+
+# Aspectos personalizados de cada máquina
+CMSMachine = Struct.new(:offset, :internalName, :memory, :cores, :blacklist) do
+    attr_accessor :ip
+    attr_accessor :nodeName
+end
+
+# Cada máquina
+main = CMSMachine.new(1, "main", 4096, 2, [
+    # Lista de ficheros de instalación que no se ejecutarán
+    # No añadas (una segunda vez) nuestro nombre en /etc/hosts
+    "45-mainNodeInHosts.sh"
+])
+worker = CMSMachine.new(2, "worker", 4096, 2, [])
+
+adminfrontend = CMSMachine.new(3, "adminfrontend", 2048, 2, [])
+contestfrontend = CMSMachine.new(4, "contestfrontend", 2048, 2, [])
+
+# Orden en el que se crearán
+machines=[main,worker,adminfrontend,contestfrontend]
+
+Vagrant.configure("2") do |config|
+
+    # Cargamos el .env en variables de entorno
+    config.env.enable
+
+    # Asignamos IPs, nombre del nodo y CPU
+    nextIP = IPAddr.new(ENV["IP"] || "192.168.0.10")
+    machines.each do |m|
+        if ENV[m.internalName + "_ip"]
+            m.ip = ENV[m.internalName + "_ip"]
+        else
+            m.ip = nextIP.to_string()
+            nextIP=nextIP.succ()
+        end
+        if ENV[m.internalName + "_cpus"]
+            m.cores = ENV[m.internalName + "_cpus"]
+        end
+        if ENV[m.internalName + "_memory"]
+            m.memory = ENV[m.internalName + "_memory"]
+        end
+        m.nodeName = m.internalName
+        if ENV[m.internalName + "_name"]
+            m.nodeName = ENV[m.internalName + "_name"]
+        end
+    end
+
+    # machines.each do |m|
+    #    puts m.internalName + "\t" + m.nodeName + "\t" + m.ip.to_s() + "\t" + m.cores.to_s() + "\t" + m.memory.to_s()
+    # end
+
+    ## PARA CADA MÁQUINA
+    machines.each do |m|
+        nodeName = m.nodeName
+        config.vm.define nodeName do |node|
+            
+            # Configuración básica de la máquina
+            # Máquina base
+            node.vm.box = VM_BASE_IMAGE_NAME
+            node.vm.box_version = VM_BASE_IMAGE_VERSION
+            # Nombre del host
+            node.vm.hostname = nodeName
+            # Red
+            node.vm.network "private_network", ip: m.ip
+            # Personalización de la máquina virtual en VirtualBox
+            node.vm.provider "virtualbox" do |vb|
+                vb.gui = false
+                vb.memory = m.memory
+                vb.cpus = m.cores
+            end
+
+            # Copia a la máquina de los ficheros auxiliares necesarios
+            # Comunes
+            node.vm.provision "file", source: "provisioning/files/all", destination: "~/provision-files"
+            # Específicos del nodo
+            node.vm.provision "file", source: "provisioning/files/#{m.internalName}", destination: "~/provision-files"
+            # Comunes a todas las boxes
+            node.vm.provision "file", source: "../provisioning/files", destination: "~/provision-files"
+            if ENV["CONCURSO_PRUEBA"] && (m.internalName == "main")
+               node.vm.provision "file", source: "../datos-simulacro", destination: "~/datos-simulacro"
+            end
+
+            # # Ejecutamos los scripts de instalación/configuración
+            provisioningScripts = []
+                # Los generales
+                .concat(Dir.glob("../provisioning/scripts/*.sh"))
+                # Los específicos de estas boxes
+                .concat(Dir.glob("provisioning/scripts/*.sh"))
+                # Los específicos de esta máquina/nodo
+                .concat(Dir.glob("provisioning/scripts/#{m.internalName}/*.sh"))
+                # Quitamos los que estén en la lista negra de la máquina/nodo
+                .select { |f| !m.blacklist.include?(File.basename(f)) }
+                # Ordenamos
+                .sort { |a,b| File.basename(a)<=>File.basename(b)}
+
+            provisioningScripts.each do |script|
+                node.vm.provision "shell", path: script, env: {
+                    DEFAULT_USER: "vagrant",
+                    CONFIG_FILE: "/vagrant/#{CONFIG_FILE}",
+                    DB_PASS_ALTERNATIVE: DB_PASS_CANDIDATE,
+                    SECRET_KEY_ALTERNATIVE: SECRET_KEY_CANDIDATE,
+                    OS_USER_PASSWORD: ENV["OS_USER_PASSWORD"],
+                    NODE_INFO: "/home/vagrant/provision-files/nodeInfo.json",
+                    NODE_NAME: m.nodeName,
+                    NODE_IP: m.ip,
+                    MAIN_NODE_NAME: main.nodeName,
+                    MAIN_NODE_IP: main.ip,
+                    CONTEST_NODE_NAME: contestfrontend.nodeName,
+                    CONTEST_NODE_IP: contestfrontend.ip,
+                    ADMIN_NODE_NAME: adminfrontend.nodeName,
+                    WORKER_NODE_NAME: worker.nodeName,
+                    WORKER_NODE_IP: worker.ip
+                }
+            end
+
+        end
+    end
+end

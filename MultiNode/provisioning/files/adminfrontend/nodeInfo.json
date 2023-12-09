@@ -1,0 +1,7 @@
+{
+    
+    "help": "Información sobre el nodo/máquina útil para la fase de instalación de CMS.",
+
+    "roles": [ "adminfrontend" ]
+
+}
