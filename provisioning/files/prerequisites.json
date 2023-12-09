@@ -1,0 +1,100 @@
+{
+    "help": "Lista de prerequisitos/paquetes a instalar necesarios para CMS.",
+    
+    "all" : [
+        {
+            "comment": "Dependencias básicas de CMS y librerías",
+            "packages": ["python3.6", "cgroup-lite", "libcap-dev zip"]
+        },
+
+        {
+            "comment": "libcups2-dev (se necesita aunque no se vaya a lanzar el servicio de impresión, pues el código de python lo espera; falla la compilación si no).",
+            "packages": ["libcups2-dev"]
+        },
+
+        {
+            "comment": "C/C++ para poder compilar 'isolate'; los scripts de CMS lo compilan siempre, aunque solo se use en los workers",
+            "packages": ["build-essential", "gcc", "g++", "make"]
+        },
+
+        {
+            "comment": "Dependencias para usar pip para instalar las dependencias de python",
+            "packages": ["python3.6-dev", "libpq-dev", "libyaml-dev", "libffi-dev", "python3-pip"]
+        },
+
+        {
+            "comment": "Paquete de utilidades (para sponge)",
+            "packages": ["moreutils"]
+        },
+
+        {}
+    ],
+
+    "main" : [
+
+        {
+            "comment": "postgresql",
+            "packages": ["postgresql", "postgresql-client"]
+        },
+
+        {
+            "comment": "nginx",
+            "packages": ["nginx"]
+        },
+
+        {}
+    ],
+
+    "adminfrontend": [
+
+        {
+            "comment": "nginx",
+            "packages": ["nginx"]
+        },
+
+        {}
+
+    ],
+
+    "contestfrontend": [
+
+        {
+            "comment": "Documentación en línea de C++",
+            "packages": ["stl-manual", "cppreference-doc-en-html"]
+        },
+
+
+        {
+            "comment": "nginx",
+            "packages": ["nginx"]
+        },
+
+        {}
+
+    ],
+
+    "worker": [
+
+        {
+            "comment": "Lenguajes soportados (además de Python y C/C++ ya instalados",
+            "packages": ["openjdk-11-jdk-headless"]
+        },
+
+        {}
+
+    ],
+
+    "rankingfrontend": [
+
+        {
+            "comment": "nginx",
+            "packages": ["nginx"]
+        },
+
+        {}
+
+    ],
+
+    "ignoreThis": "Último vacío para que todos tengan la coma final :-p"
+
+}

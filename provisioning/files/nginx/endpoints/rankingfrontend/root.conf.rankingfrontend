@@ -1,0 +1,11 @@
+# Acceso al primer ranking desde el dominio raíz.
+location / {
+    proxy_pass http://rws1/;
+    include proxy_params;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+
+    # Needs to be as large as the maximum allowed submission
+    # and input lengths set in cms.conf.
+    client_max_body_size 50M;
+}

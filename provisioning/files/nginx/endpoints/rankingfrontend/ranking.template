@@ -1,0 +1,24 @@
+  # Serve RankingWebServer with RWS prefix.
+  location /RANKING_PATH/ {
+    proxy_pass http://rwsID/;
+    include proxy_params;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+
+    # ? http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_redirect
+    proxy_redirect / /RANKING_PATH/;
+    proxy_redirect http://$host/ /RANKING_PATH/;
+    
+    # Buffering blocks the streaming HTTP requests used for live-update.
+    proxy_buffering off;
+
+    # Protect it with an authentication. For more information
+    # see http://wiki.nginx.org/HttpAuthBasicModule.
+    # auth_basic "RankingWebServer";
+    # auth_basic_user_file /etc/nginx/htpasswd_RWS;
+
+    # Protect it with an IP address whitelist.
+    # allow 127.0.0.1;
+    # Insert other allowed IP addesses or subnets here.
+    # deny all;
+  }

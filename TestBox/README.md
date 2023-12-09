@@ -15,10 +15,20 @@ vagrant up
 
 a continuación se puede dirigir un navegador a:
 
-- (Interfaz de administración)[http://192.168.10.11/admin] (credenciales: `admin`/`adminCMS`)
-- (Interfaz de participante)[http://192.168.10.11/participante] (si se indicó `CONCURSO_PRUEBA` en `.env`, credenciales: `harry`/`potter`).
-- (Clasificación del concurso)[http://192.168.10.11/clasif] Si no se indicó
+- Interfaz de administración : http://192.168.10.11/admin (credenciales: `admin`/`adminCMS`)
+- Interfaz de participante: http://192.168.10.11/participante (si se indicó `CONCURSO_PRUEBA` en `.env`, credenciales: `harry`/`potter`).
+- Clasificación del concurso: http://192.168.10.11/clasif Si no se indicó
 `CONCURSO_PRUEBA` en `.env`, aparecerá vacío.
+
+Si las páginas anteriores no responden es posible que se trate de un
+problema de la configuración de red del sistema de virtualización. 
+VirtualBox se crea una red nueva en el sistema (normalmente de
+nombre `vboxnet0`) y podría ser que el interfaz de red (virtual) para
+acceder a ella no esté lanzado. Si es así se puede lanzar con:
+
+```shell
+sudo ifconfig vboxnet0 192.168.10.1/24
+```
 
 ## Modo de uso detallado
 
@@ -28,7 +38,7 @@ en el fichero `.env`; se puede utilizar como inspiración el contenido de
 
 Si la máquina se va a utilizar únicamente para pruebas locales, con la
 configuración por defecto valdrá. Si se va a utilizar para algo más,
-**no olvidar cambiar las contraseñas**.
+**no olvidar cambiar la contraseña del administrador**.
 
 La máquina lanza CMS y el resto de procesos satélites. Todos ellos son accesibles a través de `http` en distintas rutas (`admin`, `clasif` y `participante`). A esas
 rutas se llega gracias a un `nginx` que hace de proxy a cada uno de

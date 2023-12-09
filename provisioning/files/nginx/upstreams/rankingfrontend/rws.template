@@ -1,0 +1,8 @@
+# Group the RankingWebServers to load balance among them (useful to
+# overcome the hard limit on simultaneous open file descriptors if
+# you expect a very large number of clients).
+upstream rwsID {
+    keepalive 500;
+    server 127.0.0.1:8890;
+    # Insert other RWSs here.
+}

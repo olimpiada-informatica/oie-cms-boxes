@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Ranking Web Server for contest %i
+Requires=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/tmp
+ExecStart=/bin/sh -c "/usr/local/bin/cmsRankingWebServer --config /home/cms/rankings/cms.ranking%i.conf >> /var/log/cms/RankingWebServer%i.log 2>&1"
+Restart=on-failure
+SyslogIdentifier=cmsRankingWebServer%i
+
+[Install]
+WantedBy=multi-user.target

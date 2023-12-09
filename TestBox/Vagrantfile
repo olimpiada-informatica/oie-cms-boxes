@@ -1,12 +1,22 @@
 # Fichero que crea una máquina virtual con un CMS desplegado
-# "todo en uno". Requiere un fichero de configuración con
+# "todo en uno". Requiere un fichero de configuración (.env) con
 # información básica.
 #
 # Olimpiada Informática Española (OIE)
 
 require 'fileutils'
+require 'securerandom'
 
 CONFIG_FILE = ".env"
+
+# Imagen base: Ubunutu 18.04. Fijamos una versión concreta probada
+# aunque invalide actualizaciones
+# Puedes probar con una versión más moderna, siempre y cuando
+# mantengas bionic64
+# Historia de versiones: https://app.vagrantup.com/ubuntu/boxes/bionic64
+VM_BASE_IMAGE_NAME = "ubuntu/bionic64"
+VM_BASE_IMAGE_VERSION = "20210916.0.0"
+
 
 # Comprobamos si existe el fichero de configuración. En la práctica
 # solo se necesita en la primera ejecución cuando se monta la MV. Si no existe, se copia desde
@@ -26,6 +36,10 @@ unless Vagrant.has_plugin?("vagrant-env")
     raise 'plugin vagrant-env no instalado'
 end
 
+# Elegimos valores aleatorios para provisioning de contraseña de la BBDD
+# y secret_key de CMS (ambos sobreescribibles en el .env)
+DB_PASS_CANDIDATE=SecureRandom.hex(16)
+SECRET_KEY_CANDIDATE=SecureRandom.hex(16)
 
 Vagrant.configure("2") do |config|
 
@@ -33,13 +47,8 @@ Vagrant.configure("2") do |config|
     
     IP = ENV["IP"] || "192.168.10.11"
 
-    # Imagen base: Ubunutu 18.04. Fijamos una versión concreta probada
-    # aunque invalide actualizaciones
-    # Puedes probar con una versión más moderna, siempre y cuando
-    # mantengas bionic64
-    # Historia de versiones: https://app.vagrantup.com/ubuntu/boxes/bionic64
-    config.vm.box = "ubuntu/bionic64"
-    config.vm.box_version = "20210916.0.0"
+    config.vm.box = VM_BASE_IMAGE_NAME
+    config.vm.box_version = VM_BASE_IMAGE_VERSION
 
     config.vm.hostname = ENV["hostname"] || "cmsOIE"
 
@@ -49,7 +58,8 @@ Vagrant.configure("2") do |config|
     # Personalización de la máquina virtual en VirtualBox
     config.vm.provider "virtualbox" do |vb|
         vb.gui = false
-        vb.memory = "4096"
+        vb.memory = ENV["ram"] || 4096
+        vb.cpus = ENV["cpus"] || 2
     end
 
     # Copiamos a la máquina virtual los ficheros auxiliares que necesitan
@@ -64,7 +74,22 @@ Vagrant.configure("2") do |config|
     # Juntamos los específicos del directorio con los generales y los ordenamos
     # por nombre de fichero
     Dir.glob("../provisioning/scripts/*.sh").concat(Dir.glob("provisioning/scripts/*.sh")).sort { |a,b| File.basename(a)<=>File.basename(b)}.each do |script|
-        config.vm.provision "shell", path: script, env: { DEFAULT_USER: "vagrant", CONFIG_FILE: "/vagrant/#{CONFIG_FILE}" }
+        config.vm.provision "shell", path: script, env: { 
+            DEFAULT_USER: "vagrant",
+            CONFIG_FILE: "/vagrant/#{CONFIG_FILE}",
+            DB_PASS_ALTERNATIVE: DB_PASS_CANDIDATE,
+            SECRET_KEY_ALTERNATIVE: SECRET_KEY_CANDIDATE,
+            OS_USER_PASSWORD: ENV["OS_USER_PASSWORD"],
+            NODE_NAME: "localhost",
+            NODE_IP: "#{IP}",
+            NODE_INFO: "/home/vagrant/provision-files/nodeInfo.json",
+            MAIN_NODE_NAME: "localhost",
+            CONTEST_NODE_NAME: "localhost",
+            ADMIN_NODE_NAME: "localhost",
+            WORKER_NODE_NAME: "localhost",
+            NUM_RANKINGS: "1",
+            PATH_RANKING_1: "/clasif"
+         }
     end
 
 end

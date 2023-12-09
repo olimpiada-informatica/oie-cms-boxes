@@ -1,0 +1,13 @@
+[Unit]
+Description=Run CMS Proxy Service for contest %i. Used when cmsResourceManager is launched with ALL param
+Requires=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/tmp
+ExecStart=/bin/sh -c "/usr/local/bin/cmsProxyService -c %i >> /var/log/cms/ProxyService.log 2>&1"
+Restart=on-failure
+SyslogIdentifier=cmsProxyService%i
+
+[Install]
+WantedBy=multi-user.target
