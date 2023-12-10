@@ -4,7 +4,7 @@
 #
 # Inicializa un nuevo ranking dado su id numérico:
 #
-#   - Crea el directorio donde el RankingServer guadará los datos.
+#   - Crea el directorio donde el RankingServer guardará los datos.
 #   - Crea el fichero de credenciales de comunicación entre ProxyServer
 # y RankingServer con valores aleatorios.
 #
