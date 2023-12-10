@@ -16,7 +16,7 @@ vagrant up
 a continuación se puede dirigir un navegador a:
 
 - Interfaz de administración : http://192.168.10.11/admin (credenciales: `admin`/`adminCMS`)
-- Interfaz de participante: http://192.168.10.11/participante (si se indicó `CONCURSO_PRUEBA` en `.env`, credenciales: `harry`/`potter`).
+- Interfaz de participante: http://192.168.10.11/participante (si se indicó `CONCURSO_PRUEBA` en el fichero `.env`, credenciales: `harry`/`potter`).
 - Clasificación del concurso: http://192.168.10.11/clasif Si no se indicó
 `CONCURSO_PRUEBA` en `.env`, aparecerá vacío.
 
