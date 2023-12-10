@@ -11,9 +11,9 @@ localmente para una primera aproximación a CMS, para que el equipo
 de elaboración de problemas pueda hacer pruebas locales durante 
 la creación del juego de tareas o para desplegarlo en un servidor
 que sea utilizado durante el concurso. Más abajo se detallan las
-distintas alternativas de desplegado proporcionadas.
+distintas alternativas de desplegado proporcionadas. La instalación de CMS incorpora, además, una serie de /scripts/ que hacen más fácil la administración del sistema (pues el control de CMS no se realiza únicamente desde el interfaz web sino que tiene también una parte importante de gestión utilizando la línea de órdenes).
 
-Nótese, no obstante, que las distintas opciones dadas **no** son
+Las opciones de desplegado dadas  **no** son
 las únicas posibles. Dependiendo de la infraestructura de red que tenga el centro
 organizador y de la tolerancia ante fallos que se quiera conseguir se podría
 necesitar una configuración distinta. En ese caso, este repositorio puede servir,
@@ -38,7 +38,7 @@ para su uso en la OIE que está disponible en
 adaptaciones son mínimas y pueden verse en su histórico de commits.
 
 Todas las opciones de desplegado hacen uso de la **versión 1.4** modificada de CMS usando
-Ubuntu~18.04 que es la versión de Linux probada por los propios desarrolladores de
+Ubuntu 18.04 que es la versión de Linux probada por los propios desarrolladores de
 CMS. Además, cuando el entorno de virtualización utilizado es VirtualBox,
 los scripts ajustan algunas opciones de las máquinas virtuales (memoria y CPUs virtuales).
 Si utilizas un sistema distinto, es posible que quieras ajustar esa configuración
@@ -160,6 +160,12 @@ $ vagrant destroy
     default: Are you sure you want to destroy the 'default' VM? [y/N] y
 ```
 
+## Desplegando en un servidor
+
+Las máquinas creadas con Vagrant se pueden después llevar a un servidor. Para eso habrá que sacar la máquina del ordenador donde se construyó, quizá convertir el disco virtual a un formato distinto, cambiar la IP a otra, etc.
+
+Los pasos a realizar dependerán de las necesidades particulares, por lo que no se detallan aquí.
+
 ## Prerequisitos
 
 Como se ha dicho, los scripts hacen uso de [Vagrant](https://es.wikipedia.org/wiki/Vagrant_(software)).
@@ -177,7 +183,7 @@ $ sudo apt-get install vagrant
 Tras lo cual será necesario reiniciar (en otro caso, Vagrant no utilizará VirtualBox
 como sistema de virtualización y la ejecución de los scripts dará error).
 
-Además, los scripts hacen uso del *plug-in* de Vagrant ~vagrant-env~ que se instala con
+Además, los scripts hacen uso del *plug-in* de Vagrant ```vagrant-env``` que se instala con
 
 ```bash
 $ vagrant plugin install vagrant-env
@@ -209,6 +215,29 @@ ranking.
 
 Esta máquina es útil como primera aproximación a CMS, para que el equipo de
 elaboración de problemas pueda probar en sus máquinas las distintas tareas, etc.
+
+### SingleNode
+
+Una versión simple pero con ciertas comodidades de gestión que permite organizar una conpetición pequeña con varios días de concurso.
+
+Una máquina creada con una configuración similar a esta se utilizó,
+por ejemplo, en la OIE'2021 para gestionar una competición
+con 30 participantes.
+
+Igual que TestBox, consiste en una única máquina virtual con todos los servicios lanzados. La diferencia principal consiste en que en este caso el fichero de configuración permite predefinir los rankings que se tendrán. De esta forma la máquina queda configurada para, por ejemplo, tener un ranking para el concurso de prueba del primer día, otros dos para las dos competiciones y un último para la clasificación agregada.
+
+### MultiNode
+
+La versión de instalación más completa que separa los distintos servicios de CMS en máquinas distintas de forma que se pueda dividir la carga mejor.
+
+En concreto se crean cuatro máquinas virtuales:
+
+   - **main**: con la base de datos de CMS y otros componentes nucleares, así como los distintos rankings.
+   - **contestfrontend**: frontend utilizado por los participantes.
+   - **adminfrontend**: frontend utilizado por los jueces y administradores.
+   - **worker**: máquina que se encarga únicamente de evaluar envíos (no tiene interfaz web).
+
+Tiene la posibilidad de predefinir varios rankings también.
 
 ## Autores
 
