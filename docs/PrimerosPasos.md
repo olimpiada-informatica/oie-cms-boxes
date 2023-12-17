@@ -32,7 +32,7 @@ Terminamos.
 Vagrant failed to initialize at a very early stage:
 [...]
 
-# Ahora sí, vagrant montará la máquina. La operación
+# Ahora sí, Vagrant montará la máquina. La operación
 # tardará unos minutos y generará bastante salida
 $ vagrant up
 Bringing machine 'default' up with 'virtualbox' provider...
@@ -75,7 +75,7 @@ El bloque izquierdo es un menú y el derecho muestra la información
 relevante de la opción seleccionada. Algunas cosas que pueden verse en
 la parte izquierda:
 
-   - No hay ningún concurso y tarea (problema) dado de alta.
+   - No hay ningún concurso ni tarea (problema) dado de alta.
    - Hay 12 usuarios (participantes) registrados (la pista la da el
      texto ```show the 12 users...```). Esto solo ocurrirá si en el
      ```.env``` se indicó que se quería tener soporte para el concurso
@@ -83,7 +83,7 @@ la parte izquierda:
      de Harry Potter.
    - Hay 5 equipos dados de alta (también únicamente si se indicó
      concurso de prueba). El concepto de equipo en CMS no es el
-     habitual en otros concursos (un equipo participa como bloque)
+     habitual en otros concursos (donde un equipo participa como bloque)
      sino más bien "delegaciones" o "instituciones". Un caso habitual
      en la OIE es que cada equipo sea una regional mientra que en la
      competición internacional cada equipo es un país. En las
@@ -95,9 +95,9 @@ la parte izquierda:
 Por su parte en el panel central se puede ver que:
 
    - No hay ninguna tarea/envío por evaluar actualmente.
-   - Hay lanzados 3 "workers" o jueces en la máquina lo que significa
-     que hay tres procesos que podrían evaluar envíos en paralelo. Si
-     en la configuración del ```.env```, esta cantidad podría variar.
+   - Hay lanzados 3 "workers" o jueces en la máquina, lo que significa
+     que hay tres procesos que podrían evaluar envíos en paralelo. En
+     la configuración del ```.env``` esta cantidad se podría modificar.
 
 Si se pulsa la opción ```Resource usage``` del menú lateral aparece la
 lista de todas las máquinas responsables de la instancia de CMS
@@ -126,16 +126,16 @@ que no detallaremos.
 ## Página de participantes
 
 La página de participantes en este momento es de poca utilidad pues no
-hay ningún concurso creado. No obstante, se puede comprobar que,
+hay ningún concurso creado. No obstante, dirigiendo el navegador a
+http://192.168.10.11/participante/ se puede comprobar que,
 efectivamente, el ```ContestWebServer``` está funcionando
-correctamente dirigiendo el navegador a
-http://192.168.10.11/participante/
+correctamente.
 
 ![Página para participantes vacía](./images/contestWebServerVacio.png)
 
 En este momento, como decimos, la página indica que se elija un
 concurso pero no aparece ninguno en la lista y por tanto no permite
-hacer login (en CMS aunque el login se hace siempre enlazado a un
+hacer login (en CMS el login se hace siempre vinculado a un
 concurso concreto).
 
 En general CMS puede estar configurado para "atender" a todos los
@@ -167,7 +167,7 @@ En este punto podemos acceder por SSH a la máquina para conocer un
 poco cómo está la instalación. Parte de la administración de CMS debe
 hacerse por consola por lo que es bueno habituarse.
 
-Para la máquina recien creada con Vagrant basta utilizar la capacidad
+Para la máquina recién creada con Vagrant basta utilizar la capacidad
 de Vagrant de conectarse por SSH. Eso sí, de esta forma se utilizará
 el usuario del sistema llamado ```vagrant```. Durante la instalación
 se ha creado un usuario distinto para administración que es el que
@@ -189,7 +189,7 @@ cms@cms-OIE:~$
 ```
 
 Si se listan los procesos en ejecución (por ejemplo con ```pstree```)
-se puede ver que está lanzado ```postgres``` responsable de la base de
+se puede ver que está lanzado ```postgres```, responsable de la base de
 datos de CMS, así como los servicios que veíamos en la página de
 administración. También aparece un ```cmsRankingWebServer```
 responsable de la página de ranking que, por la forma en la que
@@ -408,7 +408,7 @@ concurso (con el logo de Harry Potter) y el resto lanzados (la web
 funciona) pero vacíos.
 
 La forma de acceder a las páginas de administración y participantes es
-exactamente igual que en el caso del TestBox y el lanzamiento del
+exactamente igual que en el caso del TestBox, y el lanzamiento del
 concurso de prueba también.
 
 ### MultiNode
@@ -422,16 +422,15 @@ configuración por defecto del fichero
    - Administración: http://192.168.10.14/admin y como en este caso la
      máquina no aloja ningún ranking, también en la dirección raíz,
      http://192.168.10.14
-   - Participante: http://192.168.10.14/participante y sin la ruta,
-     http://192.168.10.14
+   - Participante: http://192.168.10.15/participante y sin la ruta,
+     http://192.168.10.15
    - Ranking: http://192.168.10.12/clasif-test o sin la ruta,
-     http://192.168.10.12.
+     http://192.168.10.12
 
-
-Además en este caso el concurso de prueba hay que hacer las mismas
+Además, hay que hacer las mismas
 acciones que en el caso de TestBox sobre la máquina virtual llamada
 ```main``` (la que contiene la base de datos y los servicios
-esenciales de CMS). Además, una vez creado el concurso es necesario
+esenciales de CMS). Y una vez creado el concurso es necesario
 hacer SSH a la máquina con el frontend del participante (```vagrant
 ssh contestfrontend```) y activar también el concurso:
 
@@ -441,6 +440,6 @@ vagrant@cms-OIE:~$ sudo activateContest.sh 1
 ```
 
 Hay que hacerlo en ambas máquinas (tanto en ```main``` como en
-```contestfrontend```) porque en uno sirve para que los rankings se
+```contestfrontend```) porque en una sirve para que los rankings se
 actualicen correctamente y en la otra para que la web de los
 participantes vaya directa al login del concurso activo.

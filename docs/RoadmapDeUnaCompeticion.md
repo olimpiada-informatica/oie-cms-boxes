@@ -83,7 +83,7 @@ de CMS, pero para nosotros es:
 
 Poco antes del comienzo de cada concurso habrá que activarlo en CMS
 utilizando (como root) el script ```activateContest.sh``` seguido del
-id del usuario. En instalaciones multinodo esta activación habrá que
+id del concurso. En instalaciones multinodo esta activación habrá que
 hacerla tanto en la máquina ```main``` como en ```contestfrontend```.
 El script desactiva el concurso anterior (si lo había) y activa el nuevo.
 
@@ -383,7 +383,7 @@ Con este calendario lo que se añadió en el ```crontab``` fue:
 Es **importante** que todas las activaciones/desactivaciones que ocurren
 a la misma hora se planifiquen en una única línea, en lugar de en varias
 líneas con la misma hora de comienzo. En caso contrario el demonio podría
-lanzarlas todas a la vez algo para lo que los scripts o están preparados
+lanzarlas todas a la vez algo para lo que los scripts no están preparados
 (podrían pisarse unos a otros el fichero de configuración). No queréis saber
 cómo nos dimos cuenta de esto... ':-)
 

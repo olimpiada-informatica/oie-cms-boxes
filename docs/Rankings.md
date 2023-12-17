@@ -31,7 +31,7 @@ El *RankingWebServer* para funcionar necesita:
    que van teniendo lugar en el concurso para actualizar la clasificación.
    El servicio encargado de esos avisos es el *ProxyService* (que en
    nuestra instalación está en la máquina con rol ```main```).
-   - Un fichero de configuración con el puerto en el que escuchar así
+   - Un fichero de configuración con el puerto en el que escuchar, así
    como las credenciales de acceso que el *ProxyService* utilizará para
    enviarle la información del concurso. Es importante mantener esas
    credenciales en secreto, claro, pues en caso contrario un atacante podría
@@ -91,14 +91,14 @@ prueba, se copian los distintos logos y fotos de los participantes.
 
 Tanto los ficheros de configuración como los directorios de datos se
 encuentran en ```/home/cms/rankings```. Los directorios son ```rankingX```
-y los ficheros de configuración ```cms.rankingX.conf``` (con la X el
+y los ficheros de configuración ```cms.rankingX.conf``` (donde la X representa el
 identificador del ranking).
 
 La instalación crea los rankings pero *no habilita su actualización* por lo que
 si se monta un concurso en el CMS y se hacen envíos, ninguno de los rankings
 sufrirá cambios.
 
-Para activar/desactivar los rankings existen tres scripts (ambos deben
+Para activar/desactivar los rankings existen tres scripts (los tres deben
 ejecutarse como ```root```):
 
    - ```enableRankingUpdates.sh <id>```: habilita la actualización del
@@ -120,20 +120,20 @@ está explicado [aquí](./RoadmapDeUnaCompeticion.md).
 
 En las páginas de los rankings aparece a la izquierda el logo del
 concurso y por cada participante la "bandera" del país al que pertenecen
-(que en concursos como la OIE puede ser el logo del regional origen,
+(que en concursos como la OIE puede ser el logo de la regional de origen,
 por ejemplo) y una foto.
 
-Para conseguirlo deben copiarse las imágenes a los directorios de datos
+Para conseguirlo, deben copiarse las imágenes a los directorios de datos
 de todos los rankings. Lo mejor para eso (y para otras cosas)
 es tener en ficheros .json la lista de participantes y la lista de
-equipos/países y tener las imágenes organizadas tal y como las esperan
+equipos/países, y tener las imágenes organizadas tal y como las esperan
 los rankings. Haciéndolo de esta manera se puede utilizar el script
 ```addRankingImages.sh``` para añadir las imágenes a cada uno de los
 rankings.
 
 Un ejemplo de datos se puede encontrar en el directorio
 ```/home/cms/concurso-prueba/datos-simulacro/usuarios``` de
-la máquina que tiene los rankings (siempre y cuando se configurar el
+la máquina que tiene los rankings (siempre y cuando se haya configurado el
 concurso de prueba). Hay una explicación más detallada sobre todo
 esto en [el repositorio de GitHub asociado](https://github.com/olimpiada-informatica/cms-utils).
 
@@ -171,24 +171,24 @@ existen también scripts para hacerlo. Los pasos son:
    1. Ejecutar ```initRanking.sh <id>``` que crea un fichero de configuración
    con credenciales aleatorias y el directorio de datos del ranking
    cuyo id se indica. El id debe ser nuevo.
-   1. Habilitar el  *RankingWebService* asociado ejecutando (como root)
+   2. Habilitar el  *RankingWebService* asociado ejecutando (como root)
    ```enableCMSService.sh cmsRankingWebServer@X.service``` donde el X
    será el identificador numérico del ranking.
-   1. Ejecutar ```publishRankingWeb.sh <id> <ruta>``` que configura nginx
+   3. Ejecutar ```publishRankingWeb.sh <id> <ruta>``` que configura nginx
    para vincular la ruta indicada con el *RankingWebServer* asociado al id
    dado.
 
 ## Eliminando un ranking
 
-Si en algún momento se quiere eliminar un ranking (= dejar de hacerlo
+Si en algún momento se quiere eliminar un ranking (es decir, dejar de hacerlo
 público), se debe:
 
    1. Deshabilitar el *RankingWebService* asociado jecutando (como root)
    ```disableCMSService.sh cmsRankingWebServer@X.service``` donde el X
    será el identificador numérico del ranking.
-   1. Ejecutar ```unpublishRankingWeb.sh <id>``` que borra la configuración
+   2. Ejecutar ```unpublishRankingWeb.sh <id>``` que borra la configuración
    de nginx asociada al ranking id.
 
-El directorio de datos del ranking puede eliminarse también si se quiere
+El directorio de datos del ranking puede eliminarse también si se quiere,
 o dejarlo para utilizarlo, llegado el momento, para otra clasificación
 distinta reutilizando el id interno.

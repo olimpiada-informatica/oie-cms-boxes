@@ -11,13 +11,13 @@ localmente para una primera aproximación a CMS, para que el equipo
 de elaboración de problemas pueda hacer pruebas locales durante 
 la creación del juego de tareas o para desplegarlo en un servidor
 que sea utilizado durante el concurso. Más abajo se detallan las
-distintas alternativas de desplegado proporcionadas. La instalación de CMS incorpora, además, una serie de /scripts/ que hacen más fácil la administración del sistema (pues el control de CMS no se realiza únicamente desde el interfaz web sino que tiene también una parte importante de gestión utilizando la línea de órdenes).
+distintas alternativas de desplegado proporcionadas. La instalación de CMS incorpora, además, una serie de /scripts/ que hacen más fácil la administración del sistema (pues el control de CMS no se realiza únicamente desde la interfaz web sino que tiene también una parte importante de gestión utilizando la línea de órdenes).
 
-Las opciones de desplegado dadas  **no** son
+Las opciones de desplegado dadas **no** son
 las únicas posibles. Dependiendo de la infraestructura de red que tenga el centro
-organizador y de la tolerancia ante fallos que se quiera conseguir se podría
-necesitar una configuración distinta. En ese caso, este repositorio puede servir,
-no obstante, como ejemplo de cómo lanzar CMS para después adaptarlo a la situación
+organizador, y de la tolerancia ante fallos que se quiera conseguir, se podría
+necesitar una configuración distinta. En ese caso, este repositorio puede servir
+como ejemplo de cómo lanzar CMS para después adaptarlo a la situación
 concreta.
 
 El repositorio tiene ramas distintas para cada una de las ediciones
@@ -33,12 +33,12 @@ $ git clone https://github.com/olimpiada-informatica/oie-cms-boxes --branch oie-
 ```
 
 Todas las opciones de desplegado hacen uso de una *versión adaptada* de CMS
-para su uso en la OIE que está disponible en
+para su uso en la OIE, que está disponible en
 [este repositorio específico](https://github.com/olimpiada-informatica/cms). Las
 adaptaciones son mínimas y pueden verse en su histórico de commits.
 
 Todas las opciones de desplegado hacen uso de la **versión 1.4** modificada de CMS usando
-Ubuntu 18.04 que es la versión de Linux probada por los propios desarrolladores de
+Ubuntu 18.04, que es la versión de Linux probada por los propios desarrolladores de
 CMS. Además, cuando el entorno de virtualización utilizado es VirtualBox,
 los scripts ajustan algunas opciones de las máquinas virtuales (memoria y CPUs virtuales).
 Si utilizas un sistema distinto, es posible que quieras ajustar esa configuración
@@ -48,7 +48,7 @@ El desplegado incorpora todo lo necesario para que los concursos puedan admitir
 como lenguajes C, C++, Java y Python.
 
 **ADVERTENCIA** Dado que los scripts construyen una (o varias) máquinas virtuales,
-su ejecución requiere un espacio considerable en disco (varios gigas) y una
+su ejecución requiere un espacio considerable en disco (varios gigas), y una
 buena conexión a internet para descargar todos los recursos.
 
 ## Uso
@@ -151,7 +151,7 @@ estar la máquina ya creada y configurada, no se volverá a pasar por el
 proceso de instalación de CMS.
 
 Por último, tras terminar las pruebas podemos eliminar por completo la máquina
-virtual, bien desde VirtualBox bien desde la consola con `Vagrant`:
+virtual, bien desde VirtualBox o bien desde la consola con `Vagrant`:
 
 ```bash
 # Destruimos la máquina (desde una consola en el host situada
@@ -162,7 +162,7 @@ $ vagrant destroy
 
 ## Desplegando en un servidor
 
-Las máquinas creadas con Vagrant se pueden después llevar a un servidor. Para eso habrá que sacar la máquina del ordenador donde se construyó, quizá convertir el disco virtual a un formato distinto, cambiar la IP a otra, etc.
+Las máquinas creadas con Vagrant se pueden llevar después a un servidor. Para eso habrá que sacar la máquina del ordenador donde se construyó, quizá convertir el disco virtual a un formato distinto, cambiar la IP a otra, etc.
 
 Los pasos a realizar dependerán de las necesidades particulares, por lo que no se detallan aquí.
 
@@ -203,7 +203,7 @@ eso sí, requerirá conocimientos de instalación de CMS.
 
 Cada una de las opciones está en un directorio independiente. Se utilice la
 versión que se utilice, se debe tener descargado *el respositorio entero* pues
-todas ellas hacen uso de algunos directorios que hay en el raíz.
+todas ellas hacen uso de algunos directorios que hay en la raíz.
 
 ### TestBox
 
@@ -218,7 +218,7 @@ elaboración de problemas pueda probar en sus máquinas las distintas tareas, et
 
 ### SingleNode
 
-Una versión simple pero con ciertas comodidades de gestión que permite organizar una conpetición pequeña con varios días de concurso.
+Una versión simple pero con ciertas comodidades de gestión que permite organizar una competición pequeña con varios días de concurso.
 
 Una máquina creada con una configuración similar a esta se utilizó,
 por ejemplo, en la OIE'2021 para gestionar una competición
