@@ -42,7 +42,7 @@ publishRankings() {
     if [ ! -z "$PATH_URL" ]; then
       publishRankingWeb.sh $c $PATH_URL
       # Damos un tiempo para que nginx se relance
-      sleep 2
+      sleep 5
     fi
   done
 
